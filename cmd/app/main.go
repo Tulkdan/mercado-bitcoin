@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/signal"
 
+	"github.com/Tulkdan/central-limit-order-book/internal/pooling"
 	"github.com/Tulkdan/central-limit-order-book/internal/repository"
 	"github.com/Tulkdan/central-limit-order-book/internal/service"
 	"github.com/Tulkdan/central-limit-order-book/internal/web"
@@ -27,13 +28,19 @@ func main() {
 
 	orderService := service.NewOrderService(repository)
 	accountService := service.NewAccountService(repository)
+	sellService := service.NewSellService(repository)
 
 	server := web.NewServer(port, orderService, accountService)
 	server.ConfigureRouter()
 
+	poolingJob := pooling.NewPooling(sellService)
+
 	srvErr := make(chan error, 1)
 	go func() {
 		srvErr <- server.Start(ctx)
+	}()
+	go func() {
+		poolingJob.StartPooling()
 	}()
 
 	select {

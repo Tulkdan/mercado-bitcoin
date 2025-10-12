@@ -39,3 +39,15 @@ func (q *Queries) GetTransactionFromAccount(accountId string) []*domain.Order {
 
 	return orders
 }
+
+func (q *Queries) GetAllPendingTransactions() []*domain.Order {
+	orders := []*domain.Order{}
+
+	for _, order := range q.transactions {
+		if order.Status == domain.StatusPending {
+			orders = append(orders, order)
+		}
+	}
+
+	return orders
+}

@@ -81,3 +81,11 @@ func (p *Order) UpdateStatus(status Status) {
 
 	p.Status = status
 }
+
+func (p *Order) ConvertAmount() uint64 {
+	if p.Currency == "BRL" {
+		return p.Amount
+	}
+
+	return p.Amount * 1_000
+}
