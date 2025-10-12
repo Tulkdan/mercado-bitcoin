@@ -23,8 +23,12 @@ func main() {
 
 	port := getEnv("PORT", "8000")
 
-	orderService := service.NewOrderService(repository.New())
-	server := web.NewServer(port, orderService)
+	repository := repository.New()
+
+	orderService := service.NewOrderService(repository)
+	accountService := service.NewAccountService(repository)
+
+	server := web.NewServer(port, orderService, accountService)
 	server.ConfigureRouter()
 
 	srvErr := make(chan error, 1)

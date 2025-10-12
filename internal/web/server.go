@@ -16,26 +16,27 @@ type Server struct {
 	router *http.ServeMux
 	server *http.Server
 
-	orderService *service.OrderService
+	orderService   *service.OrderService
+	accountService *service.AccountService
 }
 
-func NewServer(port string, orderService *service.OrderService) *Server {
+func NewServer(port string, orderService *service.OrderService, accountService *service.AccountService) *Server {
 	return &Server{
-		port:         port,
-		orderService: orderService,
+		port:           port,
+		orderService:   orderService,
+		accountService: accountService,
 	}
 }
 
 func (s *Server) ConfigureRouter() {
 	mux := http.NewServeMux()
 
-	paymentsHandler := handler.NewOrderHandler(s.orderService)
+	orderHandler := handler.NewOrderHandler(s.orderService)
+	accountHandler := handler.NewAccountHandler(s.accountService)
 
-	mux.HandleFunc("POST /order", middleware.WithRequestId(paymentsHandler.Create))
-	// r.HandleFunc("POST /refunds", func(http.ResponseWriter, *http.Request) {})
-	// r.HandleFunc("GET /payments/{id}", func(w http.ResponseWriter, r *http.Request) {
-	// id := r.PathValue("id")
-	// })
+	mux.HandleFunc("POST /order", middleware.WithRequestId(orderHandler.Create))
+	mux.HandleFunc("DELETE /order/{id}", middleware.WithRequestId(orderHandler.Cancel))
+	mux.HandleFunc("GET /account/{id}", middleware.WithRequestId(accountHandler.GetBalance))
 
 	s.router = mux
 }

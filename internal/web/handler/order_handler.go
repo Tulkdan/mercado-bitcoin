@@ -6,6 +6,7 @@ import (
 
 	"github.com/Tulkdan/central-limit-order-book/internal/dto"
 	"github.com/Tulkdan/central-limit-order-book/internal/service"
+	"github.com/google/uuid"
 )
 
 type OrderHandler struct {
@@ -34,4 +35,23 @@ func (p *OrderHandler) Create(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
+}
+
+func (p *OrderHandler) Cancel(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+
+	orderId, err := uuid.Parse(id)
+	if err != nil {
+		http.Error(w, "Id must be an UUID", http.StatusBadRequest)
+		return
+	}
+
+	err = p.OrderService.CancelOrder(r.Context(), orderId)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
 }
