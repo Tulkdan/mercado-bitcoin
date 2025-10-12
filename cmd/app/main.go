@@ -5,6 +5,8 @@ import (
 	"os"
 	"os/signal"
 
+	"github.com/Tulkdan/central-limit-order-book/internal/repository"
+	"github.com/Tulkdan/central-limit-order-book/internal/service"
 	"github.com/Tulkdan/central-limit-order-book/internal/web"
 )
 
@@ -20,7 +22,9 @@ func main() {
 	defer stop()
 
 	port := getEnv("PORT", "8000")
-	server := web.NewServer(port)
+
+	orderService := service.NewOrderService(repository.New())
+	server := web.NewServer(port, orderService)
 	server.ConfigureRouter()
 
 	srvErr := make(chan error, 1)

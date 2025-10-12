@@ -15,8 +15,7 @@ type Status string
 const (
 	StatusPending  Status = "pending"  // when it needs to send payment to provider
 	StatusApproved Status = "approved" // when provider successfully charged
-	StatusRejected Status = "rejected" // when provider rejected payment
-	StatusFailed   Status = "failed"   // when provider fails to charge
+	StatusRejected Status = "canceled" // when provider rejected payment
 )
 
 type OrderType string

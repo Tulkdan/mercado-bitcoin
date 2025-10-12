@@ -16,19 +16,20 @@ type Server struct {
 	router *http.ServeMux
 	server *http.Server
 
-	OrderService *service.OrderService
+	orderService *service.OrderService
 }
 
-func NewServer(port string) *Server {
+func NewServer(port string, orderService *service.OrderService) *Server {
 	return &Server{
-		port: port,
+		port:         port,
+		orderService: orderService,
 	}
 }
 
 func (s *Server) ConfigureRouter() {
 	mux := http.NewServeMux()
 
-	paymentsHandler := handler.NewOrderHandler(s.OrderService)
+	paymentsHandler := handler.NewOrderHandler(s.orderService)
 
 	mux.HandleFunc("POST /order", middleware.WithRequestId(paymentsHandler.Create))
 	// r.HandleFunc("POST /refunds", func(http.ResponseWriter, *http.Request) {})

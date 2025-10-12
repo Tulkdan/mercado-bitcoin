@@ -2,17 +2,18 @@ package service
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/Tulkdan/central-limit-order-book/internal/domain"
 	"github.com/Tulkdan/central-limit-order-book/internal/dto"
+	"github.com/Tulkdan/central-limit-order-book/internal/repository"
 )
 
 type OrderService struct {
+	repository *repository.Queries
 }
 
-func NewOrderService() *OrderService {
-	return &OrderService{}
+func NewOrderService(repository *repository.Queries) *OrderService {
+	return &OrderService{repository: repository}
 }
 
 func (p *OrderService) CreateOrder(ctx context.Context, input dto.OrderInput) (*dto.OrderOutput, error) {
@@ -21,9 +22,7 @@ func (p *OrderService) CreateOrder(ctx context.Context, input dto.OrderInput) (*
 		return nil, err
 	}
 
-	fmt.Printf("%+v\n", order)
-
-	// TODO: save to db
+	p.repository.SaveTransaction(ctx, order)
 
 	return dto.NewOrderOutput(order.Id), nil
 }
