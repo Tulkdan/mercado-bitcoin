@@ -30,7 +30,7 @@ func (s *SellService) MakeSales() {
 				continue
 			}
 
-			if transaction.ConvertAmount() == transaction2.ConvertAmount() {
+			if transaction.ConvertToBRL() == transaction2.ConvertToBRL() {
 				transaction.UpdateStatus(domain.StatusApproved)
 				transaction2.UpdateStatus(domain.StatusApproved)
 			}

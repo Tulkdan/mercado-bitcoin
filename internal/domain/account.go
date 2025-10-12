@@ -3,19 +3,27 @@ package domain
 import "sync"
 
 type Account struct {
-	Id      string
-	Balance int64
+	Id         string
+	BRLBalance int64
+	BTCBalance int64
 
 	mu sync.Mutex
 }
 
 func NewAccount(id string) *Account {
-	return &Account{Id: id, Balance: 0}
+	return &Account{Id: id, BRLBalance: 0, BTCBalance: 0}
 }
 
-func (a *Account) UpdateBalance(value uint64) {
+func (a *Account) UpdateBTCBalance(value uint64) {
 	a.mu.Lock()
 	defer a.mu.Unlock()
 
-	a.Balance += int64(value)
+	a.BTCBalance += int64(value)
+}
+
+func (a *Account) UpdateBRLBalance(value uint64) {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+
+	a.BRLBalance += int64(value)
 }

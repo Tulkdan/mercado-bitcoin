@@ -20,9 +20,17 @@ func (a *AccountService) GetBalance(ctx context.Context, account *domain.Account
 
 	for _, transaction := range transactions {
 		if transaction.Type == domain.OrderSell {
-			account.UpdateBalance(transaction.Amount)
+			if transaction.Currency == "BRL" {
+				account.UpdateBTCBalance(transaction.ConvertToBTC())
+			} else {
+				account.UpdateBRLBalance(transaction.ConvertToBRL())
+			}
 		} else {
-			account.UpdateBalance(-transaction.Amount)
+			if transaction.Currency == "BRL" {
+				account.UpdateBRLBalance(transaction.ConvertToBRL())
+			} else {
+				account.UpdateBTCBalance(transaction.ConvertToBTC())
+			}
 		}
 	}
 

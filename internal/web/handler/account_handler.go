@@ -29,8 +29,11 @@ func (a *AccountHandler) GetBalance(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(
 		dto.AccountOutput{
-			Id:      account.Id,
-			Balance: account.Balance,
+			Id: account.Id,
+			Balance: dto.AccountBalance{
+				BTC: account.BTCBalance,
+				BRL: account.BRLBalance,
+			},
 		},
 	)
 }

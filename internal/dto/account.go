@@ -1,6 +1,11 @@
 package dto
 
+type AccountBalance struct {
+	BTC int64 `json:"BTC"`
+	BRL int64 `json:"BRL"`
+}
+
 type AccountOutput struct {
-	Id      string `json:"id"`
-	Balance int64  `json:"balance"`
+	Id      string         `json:"id"`
+	Balance AccountBalance `json:"balance"`
 }

@@ -82,10 +82,16 @@ func (p *Order) UpdateStatus(status Status) {
 	p.Status = status
 }
 
-func (p *Order) ConvertAmount() uint64 {
+func (p *Order) ConvertToBTC() uint64 {
+	if p.Currency == "BTC" {
+		return p.Amount
+	}
+	return p.Amount / 1_000
+}
+
+func (p *Order) ConvertToBRL() uint64 {
 	if p.Currency == "BRL" {
 		return p.Amount
 	}
-
 	return p.Amount * 1_000
 }
