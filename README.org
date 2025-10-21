@@ -50,8 +50,22 @@ curl -X DELETE 'http://localhost:8000/order/{ORDER-ID}'
 curl 'http://localhost:8000/account/{ACCOUNT-ID}'
 #+end_src
 
-*** Implementation
+** Implementation
 
 The project was made using an ideia of event-sourcing, so that every order made is added into a queue (implemented in this project with an in-memory array) of operations
 with this we can easily rebuild the balance of the account,
 have a history of operations and do the auditing of the system as a whole.
+
+To "process" the orders listed it was created a goroutine that keeps looking for the list of orders and executing the "transactions" (basically matching if an order of "buy" matches with an order of "sell"),
+when an order requests matches, this goroutine will change their status and transfers the values for each account.
+This job run from 5 seconds to 5 seconds.
+
+[[./images/overview.png]]
+
+
+*** Things to improve the project
+- Use a storage system to store the transaction history and the account registrarions :: could use a postgresql database.
+- Use some form of queue so that the system can handle a ton of requests :: could use RabbitMQ or Kafka for this.
+- Could fetch the price of bitcoin from an external API ::
+- Create a dockerfile so that the project could run in a containerized environment :: we could use Docker or Podman for this.
+- Change the time for the background job to be an environment var instead of value in the code :: 
